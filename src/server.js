@@ -1,4 +1,4 @@
-import { ApolloServer, makeExecutableSchema, graphqlExpress } from 'apollo-server-express';
+import { ApolloServer } from 'apollo-server-express';
 import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
@@ -16,7 +16,9 @@ const startServer = async () => {
         resolvers,
         // remove below before production
         introspection: true,
-        playground: true
+        playground: {
+            endpoint: "/graphql"
+        }
     });
 
     server.applyMiddleware({ app });
@@ -28,18 +30,6 @@ const startServer = async () => {
     });
 
     const port = process.env.PORT || 4000;
-
-    // allow for posts to graphql
-    app.use(
-        '/graphql',
-        graphqlExpress(req => ({
-          schema: makeExecutableSchema({ typeDefs, resolvers }),
-          context: {
-            user: req.user
-          },
-          uploads: false
-        }))
-    );
 
     app.get('/', (req, res) => {
         res.send('hello');
