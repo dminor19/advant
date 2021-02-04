@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { UserInputError } from 'apollo-server';
+import { UserInputError } from 'apollo-server-express';
 
 import User from '../../models/User';
 import { validateRegisterInput, validateLoginInput } from '../../util/validators';
@@ -13,7 +13,7 @@ const generateToken = (user) => {
     }, process.env.SECRET_TOKEN, { expiresIn: '1h' });
 }
 
-module.exports = {
+export default {
     Mutation: {
         async login(_, { username, password }) {
             const {errors, valid} = validateLoginInput(username, password);

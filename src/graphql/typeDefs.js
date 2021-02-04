@@ -1,6 +1,6 @@
-import { gql } from 'apollo-server';
+import { gql } from 'apollo-server-express';
 
-module.exports = gql`
+export default gql`
     type User {
         id: ID!
         email: String!

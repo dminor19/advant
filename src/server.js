@@ -1,4 +1,5 @@
-import { ApolloServer } from 'apollo-server';
+import { ApolloServer } from 'apollo-server-express';
+import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 
@@ -8,10 +9,17 @@ import resolvers from './graphql/resolvers';
 dotenv.config()
 
 const startServer = async () => {
+    const app = express();
+
     const server = new ApolloServer({
         typeDefs,
-        resolvers
-    })
+        resolvers,
+        // remove below before production
+        introspection: true,
+        playground: true
+    });
+
+    server.applyMiddleware({ app });
 
     await mongoose.connect(process.env.MONGODB_ATLAS,
         { useNewUrlParser: true, useUnifiedTopology: true })
@@ -19,10 +27,10 @@ const startServer = async () => {
         console.log('MongoDB connected')
     })
 
-    server.listen({ port: process.env.PORT || 5000 })
-        .then(res => {
-            console.log(`Server running at ${res.url}`)
-        })
+    const port = process.env.PORT || 4000;
+
+    app.listen({ port },
+        () => console.log(`Server running at http://localhost:${port}${server.graphqlPath}`));
 }
 
 startServer()

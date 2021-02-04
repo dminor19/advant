@@ -1,5 +1,5 @@
 import usersResolvers from './userResolvers';
-module.exports = {
+export default {
     Query: {
         sayHi: () => 'Hello!'
     },
