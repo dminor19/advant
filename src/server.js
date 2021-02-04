@@ -29,20 +29,16 @@ const startServer = async () => {
 
     const port = process.env.PORT || 4000;
 
-    const schema = makeExecutableSchema({
-        typeDefs,
-        resolvers
-    });
-    
     // allow for posts to graphql
     app.use(
         '/graphql',
         graphqlExpress(req => ({
-          schema,
+          schema: makeExecutableSchema({ typeDefs, resolvers }),
           context: {
             user: req.user
-          }
-        })),
+          },
+          uploads: false
+        }))
     );
 
     app.get('/', (req, res) => {
