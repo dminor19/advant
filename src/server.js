@@ -1,4 +1,4 @@
-import { ApolloServer, makeExecutableSchema } from 'apollo-server-express';
+import { ApolloServer, makeExecutableSchema, graphqlExpress } from 'apollo-server-express';
 import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
