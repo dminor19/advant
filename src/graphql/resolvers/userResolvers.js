@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import { UserInputError } from 'apollo-server-express';
 
 import User from '../../models/User';
-import { validateRegisterInput, validateLoginInput } from '../../util/validators';
+import { validateRegisterInput, validateLoginInput } from '../../utils/validators';
 
 const generateToken = (user) => {
     return jwt.sign({
