@@ -1,4 +1,4 @@
-import { ApolloServer } from 'apollo-server-express';
+import { ApolloServer, makeExecutableSchema } from 'apollo-server-express';
 import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
@@ -25,9 +25,25 @@ const startServer = async () => {
         { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
         console.log('MongoDB connected')
-    })
+    });
 
     const port = process.env.PORT || 4000;
+
+    const schema = makeExecutableSchema({
+        typeDefs,
+        resolvers
+    });
+    
+    // allow for posts to graphql
+    app.use(
+        '/graphql',
+        graphqlExpress(req => ({
+          schema,
+          context: {
+            user: req.user
+          }
+        })),
+    );
 
     app.get('/', (req, res) => {
         res.send('hello');
