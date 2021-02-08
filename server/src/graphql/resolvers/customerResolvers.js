@@ -28,8 +28,6 @@ export default {
                 customer: mongoose.Types.ObjectId(customer._id),
             }).sort({ createdAt: -1 });
 
-            console.log(`appointments: ${appointments}`);
-
             return appointments;
         },
     },
@@ -103,15 +101,15 @@ export default {
                 return false;
             }
 
-            // TODO: Change this to a single mongo stayment that updates the field
-            const customer = await Customer.findById(req.userId);
+            const customer = await Customer.findOneAndUpdate(
+                req.userId,
+                { $inc: { count: 1 } },
+                { new: true }
+            );
 
-            if (!user) {
+            if (!customer) {
                 return false;
             }
-
-            customer.count += 1;
-            await customer.save();
 
             return true;
         },
@@ -141,6 +139,28 @@ export default {
             return {
                 ...res._doc,
                 id: res._id,
+            };
+        },
+        deleteAppointment: async (_, { appointmentId }, { req }) => {
+            if (!req.userId) {
+                throw new AuthenticationError('Customer must be authenticated');
+            }
+
+            if (!appointmentId) {
+                throw new Error('No Appointment Provided');
+            }
+
+            const deletedAppointment = await Appointment.findByIdAndDelete(
+                appointmentId
+            );
+
+            if (!deletedAppointment) {
+                throw new Error('No Appointment with that ID found');
+            }
+
+            return {
+                ...deletedAppointment._doc,
+                id: deletedAppointment._doc._id,
             };
         },
     },

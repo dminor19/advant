@@ -21,7 +21,6 @@ export default gql`
     }
 
     type Query {
-        hello: String!
         getAllAppointments: [Appointment]
     }
 
@@ -31,5 +30,6 @@ export default gql`
         login(email: String!, password: String!): Customer!
         invalidateTokens: Boolean!
         createAppointment(appointmentInput: AppointmentInput!): Appointment!
+        deleteAppointment(appointmentId: ID!): Appointment!
     }
 `;
