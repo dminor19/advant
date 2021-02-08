@@ -1,10 +1,10 @@
 import { model, Schema } from 'mongoose';
 
-const userSchema = new Schema({
+const customerSchema = new Schema({
     password: String,
     email: String,
     count: { type: Number, default: 0 },
     createdAt: String,
 });
 
-export default model('User', userSchema);
+export default model('Customer', customerSchema);

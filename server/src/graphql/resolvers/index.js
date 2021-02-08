@@ -1,4 +1,4 @@
-import usersResolvers from './userResolvers';
+import usersResolvers from './customerResolvers';
 export default {
     Query: {
         hello: (_, __, { req }) => {
@@ -8,6 +8,7 @@ export default {
 
             return 'Saying hi to an authenticated user';
         },
+        ...usersResolvers.Query,
     },
     Mutation: {
         ...usersResolvers.Mutation,

@@ -7,7 +7,7 @@ import jwt from 'jsonwebtoken';
 
 import typeDefs from './graphql/typeDefs';
 import resolvers from './graphql/resolvers';
-import User from './models/User';
+import Customer from './models/Customer';
 import { createTokens } from './auth';
 
 dotenv.config();
@@ -58,7 +58,7 @@ const startServer = async () => {
             return next();
         }
 
-        const user = await User.findById(data.userId);
+        const user = await Customer.findById(data.userId);
 
         // token has been invalidated
         if (!user || user.count !== data.count) {
