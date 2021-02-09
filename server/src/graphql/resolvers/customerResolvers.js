@@ -28,7 +28,10 @@ export default {
                 customer: mongoose.Types.ObjectId(customer._id),
             }).sort({ createdAt: -1 });
 
-            return appointments;
+            return appointments.map((appointment) => ({
+                ...appointment._doc,
+                id: appointment._doc._id,
+            }));
         },
     },
     Mutation: {
@@ -122,19 +125,22 @@ export default {
                 throw new AuthenticationError('Customer must be authenticated');
             }
 
-            const user = await Customer.findById(req.userId);
-            if (!user) {
+            const customer = await Customer.findById(req.userId);
+            if (!customer) {
                 throw new AuthenticationError('Customer does not exist');
             }
 
             const newAppointment = new Appointment({
                 start_time,
                 end_time,
-                customer: user.id,
+                customer: customer.id,
                 createdAt: new Date().toISOString(),
             });
 
             const res = await newAppointment.save();
+
+            customer.appointments.push(res._id);
+            customer.save();
 
             return {
                 ...res._doc,

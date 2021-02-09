@@ -5,13 +5,14 @@ export default gql`
         id: ID!
         email: String!
         createdAt: String!
+        appointments: [Appointment]
     }
 
     type Appointment {
         id: ID!
         start_time: String!
         end_time: String!
-        customer: ID!
+        customer: Customer!
         createdAt: String!
     }
 

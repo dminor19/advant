@@ -5,6 +5,7 @@ const customerSchema = new Schema({
     email: String,
     count: { type: Number, default: 0 },
     createdAt: String,
+    appointments: [{ type: Schema.Types.ObjectId, ref: 'Appointment' }],
 });
 
 export default model('Customer', customerSchema);
