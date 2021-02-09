@@ -1,7 +1,7 @@
 import { UserInputError, AuthenticationError } from 'apollo-server-express';
 import bcrypt from 'bcryptjs';
 
-import Customer from '../../models/Customer';
+import User from '../../models/User';
 import Appointment from '../../models/Appointment';
 import {
     validateLoginInput,
@@ -19,18 +19,18 @@ export default {
                 );
             }
 
-            const customer = await Customer.findById(req.userId);
-            if (!customer) {
-                throw new AuthenticationError('Customer does not exist');
+            const user = await User.findById(req.userId);
+            if (!user) {
+                throw new AuthenticationError('User does not exist');
             }
 
             const appointments = await Appointment.find({
-                customer: mongoose.Types.ObjectId(customer._id),
+                customer: mongoose.Types.ObjectId(user._id),
             }).sort({ createdAt: -1 });
 
             return appointments.map((appointment) => ({
                 ...appointment._doc,
-                id: appointment._doc._id,
+                id: appointment._id,
             }));
         },
     },
@@ -42,42 +42,42 @@ export default {
                 throw new UserInputError('Errors', { errors });
             }
 
-            const customer = await Customer.findOne({ email });
+            const user = await User.findOne({ email });
 
-            if (!customer) {
-                errors.general = 'Customer not found';
-                throw new UserInputError('Customer not found', { errors });
+            if (!user) {
+                errors.general = 'User not found';
+                throw new UserInputError('User not found', { errors });
             }
 
-            const match = await bcrypt.compare(password, customer.password);
+            const match = await bcrypt.compare(password, user.password);
             if (!match) {
                 errors.general = 'Wrong credentials';
                 throw new UserInputError('Wrong credentials', { errors });
             }
 
-            const { refreshToken, accessToken } = createTokens(customer);
+            const { refreshToken, accessToken } = createTokens(user);
 
             res.cookie('refresh-token', refreshToken);
             res.cookie('access-token', accessToken);
 
             return {
-                ...customer._doc,
-                id: customer._id,
+                ...user._doc,
+                id: user._id,
             };
         },
         register: async (_, { email, password }) => {
-            // Validate customer data
+            // Validate user data
             const { valid, errors } = validateRegisterInput(email, password);
             if (!valid) {
                 throw new UserInputError('Errors', { errors });
             }
 
             // Make sure user doesn't already exist
-            const customer = await Customer.findOne({ email });
-            if (customer) {
-                throw new UserInputError('email is already taken', {
+            const user = await User.findOne({ email });
+            if (user) {
+                throw new UserInputError('email is already in use', {
                     errors: {
-                        email: 'This email is already taken',
+                        email: 'This email is already in use',
                     },
                 });
             }
@@ -85,13 +85,13 @@ export default {
             // hash password, create and save user, create an auth token
             password = await bcrypt.hash(password, 12);
 
-            const newCustomer = new Customer({
+            const newUser = new User({
                 email,
                 password,
                 createdAt: new Date().toISOString(),
             });
 
-            const res = await newCustomer.save();
+            const res = await newUser.save();
 
             return {
                 ...res._doc,
@@ -104,13 +104,13 @@ export default {
                 return false;
             }
 
-            const customer = await Customer.findOneAndUpdate(
+            const user = await User.findOneAndUpdate(
                 req.userId,
                 { $inc: { count: 1 } },
                 { new: true }
             );
 
-            if (!customer) {
+            if (!user) {
                 return false;
             }
 
@@ -122,25 +122,25 @@ export default {
             { req }
         ) => {
             if (!req.userId) {
-                throw new AuthenticationError('Customer must be authenticated');
+                throw new AuthenticationError('User must be authenticated');
             }
 
-            const customer = await Customer.findById(req.userId);
-            if (!customer) {
-                throw new AuthenticationError('Customer does not exist');
+            const user = await User.findById(req.userId);
+            if (!user) {
+                throw new AuthenticationError('User does not exist');
             }
 
             const newAppointment = new Appointment({
                 start_time,
                 end_time,
-                customer: customer.id,
+                customer: user.id,
                 createdAt: new Date().toISOString(),
             });
 
             const res = await newAppointment.save();
 
-            customer.appointments.push(res._id);
-            customer.save();
+            user.appointments.push(res._id);
+            user.save();
 
             return {
                 ...res._doc,
@@ -149,7 +149,7 @@ export default {
         },
         deleteAppointment: async (_, { appointmentId }, { req }) => {
             if (!req.userId) {
-                throw new AuthenticationError('Customer must be authenticated');
+                throw new AuthenticationError('User must be authenticated');
             }
 
             if (!appointmentId) {

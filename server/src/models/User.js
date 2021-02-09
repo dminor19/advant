@@ -1,6 +1,6 @@
 import { model, Schema } from 'mongoose';
 
-const customerSchema = new Schema({
+const userSchema = new Schema({
     password: String,
     email: String,
     count: { type: Number, default: 0 },
@@ -8,4 +8,4 @@ const customerSchema = new Schema({
     appointments: [{ type: Schema.Types.ObjectId, ref: 'Appointment' }],
 });
 
-export default model('Customer', customerSchema);
+export default model('User', userSchema);

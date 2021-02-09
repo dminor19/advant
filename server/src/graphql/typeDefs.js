@@ -1,7 +1,7 @@
 import { gql } from 'apollo-server-express';
 
 export default gql`
-    type Customer {
+    type User {
         id: ID!
         email: String!
         createdAt: String!
@@ -12,7 +12,7 @@ export default gql`
         id: ID!
         start_time: String!
         end_time: String!
-        customer: Customer!
+        customer: User!
         createdAt: String!
     }
 
@@ -26,9 +26,9 @@ export default gql`
     }
 
     type Mutation {
-        # Customer mutations
-        register(email: String!, password: String!): Customer!
-        login(email: String!, password: String!): Customer!
+        # User mutations
+        register(email: String!, password: String!): User!
+        login(email: String!, password: String!): User!
         invalidateTokens: Boolean!
         createAppointment(appointmentInput: AppointmentInput!): Appointment!
         deleteAppointment(appointmentId: ID!): Appointment!
