@@ -7,7 +7,7 @@ import jwt from 'jsonwebtoken';
 
 import typeDefs from './graphql/typeDefs';
 import resolvers from './graphql/resolvers';
-import User from './models/User';
+import { User } from './models/User';
 import { createTokens } from './auth';
 
 dotenv.config();

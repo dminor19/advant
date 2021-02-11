@@ -1,13 +1,20 @@
 import usersResolvers from './userResolvers';
 
 //remove this import later
-import User from '../../models/User';
+import { User } from '../../models/User';
 import Appointment from '../../models/Appointment';
 
 export default {
     Appointment: {
         customer: async (parent) => {
             const user = await User.findById(parent.customer);
+            if (!user) {
+                throw new Error('User does not exist');
+            }
+            return user;
+        },
+        servicer: async (parent) => {
+            const user = await User.findById(parent.servicer);
             if (!user) {
                 throw new Error('User does not exist');
             }
