@@ -8,6 +8,7 @@
             
 # production
 **/build
+**/web-build
 
 # system files
 .DS_Store
@@ -29,3 +30,6 @@ yarn-error.log*
 
 # database models
 *.dmm
+
+# bash scripts
+*.sh
