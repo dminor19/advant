@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import jwt from 'jsonwebtoken';
 import path from 'path';
+import helmet from 'helmet';
 
 import typeDefs from './graphql/typeDefs';
 import resolvers from './graphql/resolvers';
@@ -29,6 +30,7 @@ const startServer = async () => {
     });
 
     app.use(express.static(path.join(__dirname, '/../web-build')));
+    app.use(helmet());
     app.use(cookieParser());
 
     app.use(async (req, res, next) => {
@@ -88,10 +90,6 @@ const startServer = async () => {
         });
 
     const port = process.env.PORT || 4000;
-
-    // app.get('/', (req, res) => {
-    //     res.send('hello');
-    // });
 
     app.get('*', (req, res) => {
         res.sendFile(path.join(__dirname + '/../web-build/index.html'));

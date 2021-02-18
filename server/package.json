@@ -3,11 +3,11 @@
     "version": "1.0.0",
     "description": "",
     "main": "src/server.js",
+    "private": "true",
     "scripts": {
         "dev": "nodemon --exec babel-node src/server.js",
         "clean": "rm -rf build && mkdir build",
         "build-babel": "babel -d ./build ./src -s",
-        "preinstall": "npm run --prefix ../web prod-build",
         "build": "npm run --prefix ../web prod-build && npm run clean && npm run build-babel",
         "start": "node ./build/server.js"
     },
@@ -21,6 +21,7 @@
         "dotenv": "^8.2.0",
         "express": "^4.17.1",
         "graphql": "^15.5.0",
+        "helmet": "^4.4.1",
         "jsonwebtoken": "^8.5.1",
         "mongoose": "^5.11.14"
     },
