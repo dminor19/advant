@@ -30,7 +30,11 @@ const startServer = async () => {
     });
 
     app.use(express.static(path.join(__dirname, '/../web-build')));
-    app.use(helmet());
+    app.use(
+        helmet({
+            contentSecurityPolicy: false,
+        })
+    );
     app.use(cookieParser());
 
     app.use(async (req, res, next) => {
