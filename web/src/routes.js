@@ -1,19 +1,19 @@
 import React from 'react';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import { LoginView } from './modules/user/LoginView';
-import { MeView } from './modules/user/MeView';
-import { RegisterView } from './modules/user/RegisterView';
-import { HomeView } from './modules/HomeView';
+import {
+    BrowserRouter as Router,
+    Redirect,
+    Route,
+    Switch,
+} from 'react-router-dom';
+import { HomePage } from './pages/HomePage';
 
 export const Routes = () => {
     return (
-        <BrowserRouter>
+        <Router>
             <Switch>
-                <Route exact path="/" component={HomeView} />
-                <Route path="/login" component={LoginView} />
-                <Route path="/register" component={RegisterView} />
-                <Route path="/me" component={MeView} />
+                <Route exact path="/" component={HomePage} />
+                <Redirect to="/" />
             </Switch>
-        </BrowserRouter>
+        </Router>
     );
 };
