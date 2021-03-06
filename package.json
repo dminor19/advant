@@ -3,7 +3,8 @@
     "version": "1.0.0",
     "scripts": {
         "start": "npm --prefix ./server run start",
-        "build": "cd web/ && npm i && npm run build-heroku && cd ../server/ && npm i && npm run build"
+        "build": "cd web/ && npm run build-heroku && cd ../server/ && npm run build",
+        "install": "cd web/ && npm i && cd ../server/ && npm i"
     },
     "license": "ISC"
 }
