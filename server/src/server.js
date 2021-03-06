@@ -20,7 +20,6 @@ const startServer = async () => {
         typeDefs,
         resolvers,
         context: ({ req, res }) => ({ req, res }),
-        playground: true,
     });
 
     app.use(express.static(path.resolve(__dirname, '../../web/build')));
