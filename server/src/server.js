@@ -23,7 +23,7 @@ const startServer = async () => {
         playground: true,
     });
 
-    app.use(express.static(path.join(__dirname, '/../web-build')));
+    app.use(express.static(path.resolve(__dirname, '../../web/build')));
 
     // Middlewares
     app.use(helmet({ contentSecurityPolicy: false }));
@@ -51,7 +51,7 @@ const startServer = async () => {
 
     // serve the routes from the web
     app.get('*', (_, res) => {
-        res.sendFile(path.join(__dirname + '/../web-build/index.html'));
+        res.sendFile(path.resolve(__dirname, '../../web/build', 'index.html'));
     });
 
     // start server
