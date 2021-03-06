@@ -3,10 +3,11 @@
     "version": "1.0.0",
     "scripts": {
         "start": "npm --prefix ./server run start",
-        "build": "cd web/ && npm install && npm run build-heroku"
+        "build": "cd web/ && npm install && npm run build-heroku && cd ../server/ && npm install && npm run build"
     },
     "cacheDirectories": [
-        "web/node_modules"
+        "web/node_modules",
+        "server/node_modules"
     ],
     "license": "ISC"
 }
