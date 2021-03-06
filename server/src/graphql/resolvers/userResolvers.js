@@ -51,7 +51,7 @@ export default {
     },
     Mutation: {
         addProfilePic: async (_, { picture }) => {
-            const { createReadStream, filename } = await file;
+            const { createReadStream, filename } = await picture;
 
             const gc = new Storage({
                 keyFilename: path.join(
