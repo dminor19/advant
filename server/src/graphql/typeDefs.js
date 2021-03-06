@@ -49,6 +49,9 @@ export default gql`
         requestResetPassword(email: String!): Boolean!
         resendEmailVerification(email: String!): Boolean!
 
+        # User Mutation
+        addProfilePic(picture: Upload!): Boolean!
+
         # Eventually this will go with Admin privileges
         invalidateTokens: Boolean!
 

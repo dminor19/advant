@@ -8,7 +8,7 @@ export const sendEmail = async (
 ) => {
     // create reusable transporter object using the default SMTP transport
     let transporter = nodemailer.createTransport({
-        service: 'gmail',
+        service: process.env.SENDER_SERVICE,
         auth: {
             user: process.env.SENDER_EMAIL,
             pass: process.env.SENDER_PASSWORD,

@@ -1,8 +1,12 @@
 import { AuthenticationError } from 'apollo-server-express';
+import mongoose from 'mongoose';
+import { Storage } from '@google-cloud/storage';
+import path from 'path';
+import { createWriteStream } from 'fs';
 
+import { project_id } from '../../../google-credentials.json';
 import { User, roles } from '../../models/User';
 import Appointment from '../../models/Appointment';
-import mongoose from 'mongoose';
 
 export default {
     Query: {
@@ -46,6 +50,32 @@ export default {
         },
     },
     Mutation: {
+        addProfilePic: async (_, { picture }) => {
+            const { createReadStream, filename } = await file;
+
+            const gc = new Storage({
+                keyFilename: path.join(
+                    __dirname,
+                    '../../../google-credentials.json'
+                ),
+                projectId: project_id,
+            });
+
+            const profImageBucket = gc.getBuckets('advant-profile-images');
+
+            await new Promise((res) =>
+                createReadStream()
+                    .pipe(
+                        profImageBucket.file(filename).createWriteStream({
+                            resumable: false,
+                            gzip: true,
+                        })
+                    )
+                    .on('finish', res)
+            );
+
+            return true;
+        },
         invalidateTokens: async (_, __, { req }) => {
             if (!req.userId) {
                 console.log('no userId');

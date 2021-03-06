@@ -6,5 +6,9 @@
         "build": "cd web/ && npm run build-heroku && cd ../server/ && npm run build",
         "install": "cd web/ && npm i && cd ../server/ && npm i"
     },
+    "cacheDependencies": [
+        "web/node_modules",
+        "server/node_modules"
+    ],
     "license": "ISC"
 }
