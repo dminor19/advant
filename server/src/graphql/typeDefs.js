@@ -25,14 +25,31 @@ export default gql`
         customer_notes: String
     }
 
+    input RegisterInput {
+        email: String!
+        password: String!
+        confirmPassword: String!
+        firstName: String
+        lastName: String
+    }
+
     type Query {
+        me: User!
         getAllAppointments: [Appointment]
+        verifyEmail(tokenId: String!): Boolean!
     }
 
     type Mutation {
-        # User mutations
-        register(email: String!, password: String!): User!
+        # auth mutations
+        register(registerInput: RegisterInput): User!
         login(email: String!, password: String!): User!
+        logout: Boolean!
+        deleteAccount(email: String!, password: String!): Boolean!
+        resetPassword(password: String!, confirmPassword: String!): Boolean!
+        requestResetPassword(email: String!): Boolean!
+        resendEmailVerification(email: String!): Boolean!
+
+        # Eventually this will go with Admin privileges
         invalidateTokens: Boolean!
 
         # Customer/Admin mutations

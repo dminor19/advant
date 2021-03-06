@@ -3,102 +3,59 @@ import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
-import jwt from 'jsonwebtoken';
 import path from 'path';
 import helmet from 'helmet';
 
 import typeDefs from './graphql/typeDefs';
 import resolvers from './graphql/resolvers';
-import { User } from './models/User';
-import { createTokens } from './auth';
+import { verifyToken } from './middlewares/auth';
 
 dotenv.config();
 
 const startServer = async () => {
     const app = express();
 
+    // graphql server definition
     const server = new ApolloServer({
         typeDefs,
         resolvers,
         context: ({ req, res }) => ({ req, res }),
-
-        // remove below before production
-        introspection: true,
-        playground: {
-            endpoint: '/graphql',
-        },
+        playground: true,
     });
 
     app.use(express.static(path.join(__dirname, '/../web-build')));
-    app.use(
-        helmet({
-            contentSecurityPolicy: false,
-        })
-    );
+
+    // Middlewares
+    app.use(helmet({ contentSecurityPolicy: false }));
     app.use(cookieParser());
-
-    app.use(async (req, res, next) => {
-        const refreshToken = req.cookies['refresh-token'];
-        const accessToken = req.cookies['access-token'];
-
-        if (!refreshToken && !accessToken) {
-            return next();
-        }
-
-        try {
-            const data = jwt.verify(
-                accessToken,
-                process.env.ACCESS_TOKEN_SECRET
-            );
-            req.userId = data.userId;
-            return next();
-        } catch {}
-
-        if (!refreshToken) {
-            return next();
-        }
-
-        let data;
-
-        try {
-            data = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-        } catch {
-            return next();
-        }
-
-        const user = await User.findById(data.userId);
-
-        // token has been invalidated
-        if (!user || user.count !== data.count) {
-            return next();
-        }
-
-        const tokens = createTokens(user);
-
-        res.cookie('refresh-token', tokens.refreshToken);
-        res.cookie('access-token', tokens.accessToken);
-        req.userId = user.id;
-
-        next();
-    });
+    app.use(express.json());
+    app.use(express.urlencoded({ extended: true }));
+    app.use(verifyToken);
 
     server.applyMiddleware({ app });
 
+    // connect to server in prod or dev
+    const serverAddress =
+        process.env.NODE_ENV == 'production'
+            ? process.env.MONGODB_ATLAS
+            : 'mongodb://127.0.0.1/advant';
     await mongoose
-        .connect(process.env.MONGODB_ATLAS, {
+        .connect(serverAddress, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
+            useCreateIndex: true,
         })
         .then(() => {
-            console.log('MongoDB connected');
+            console.log('MongoDB database connected');
         });
 
-    const port = process.env.PORT || 4000;
-
-    app.get('*', (req, res) => {
+    // serve the routes from the web
+    app.get('*', (_, res) => {
         res.sendFile(path.join(__dirname + '/../web-build/index.html'));
     });
 
+    // start server
+    const port = process.env.PORT || 4000;
     app.listen({ port }, () =>
         console.log(
             `Server running at http://localhost:${port}${server.graphqlPath}`

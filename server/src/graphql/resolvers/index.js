@@ -1,4 +1,5 @@
 import usersResolvers from './userResolvers';
+import authResolvers from './authResolvers';
 
 //remove this import later
 import { User } from '../../models/User';
@@ -32,8 +33,10 @@ export default {
     },
     Query: {
         ...usersResolvers.Query,
+        ...authResolvers.Query,
     },
     Mutation: {
         ...usersResolvers.Mutation,
+        ...authResolvers.Mutation,
     },
 };

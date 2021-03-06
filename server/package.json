@@ -5,7 +5,7 @@
     "main": "src/server.js",
     "private": "true",
     "scripts": {
-        "dev": "nodemon --exec babel-node src/server.js",
+        "dev": "NODE_ENV=development nodemon --exec babel-node src/server.js",
         "clean": "rm -rf build && mkdir build",
         "build-babel": "babel -d ./build ./src -s",
         "build": "npm run --prefix ../web prod-build && npm run clean && npm run build-babel",
