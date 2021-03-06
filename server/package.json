@@ -23,7 +23,8 @@
         "graphql": "^15.5.0",
         "helmet": "^4.4.1",
         "jsonwebtoken": "^8.5.1",
-        "mongoose": "^5.11.14"
+        "mongoose": "^5.11.14",
+        "nodemailer": "^6.5.0"
     },
     "devDependencies": {
         "@babel/cli": "^7.12.10",

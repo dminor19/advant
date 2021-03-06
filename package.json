@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "scripts": {
         "start": "node server/server.js",
-        "build": "cd web/ && npm install && GENERATE_SOURCEMAP=false react-scripts build"
+        "build": "cd web/ && npm install && npm run build-heroku"
     },
     "license": "ISC"
 }
