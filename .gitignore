@@ -31,9 +31,6 @@ yarn-error.log*
 # database models
 *.dmm
 
-# bash scripts
-*.sh
-
 # credentials
 google-credentials.json
 
