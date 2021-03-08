@@ -1,0 +1,6 @@
+*
+!./package.json
+!./server/package.json
+!./server/build
+!./server/.env
+!./server/google-credentials.json 

@@ -2,13 +2,14 @@
     "name": "advant",
     "version": "1.0.0",
     "scripts": {
-        "start": "npm --prefix ./server run start",
-        "build": "cd web/ && npm run build-heroku && cd ../server/ && npm run build",
-        "install": "cd web/ && npm i && cd ../server/ && npm i"
+        "build:server": "npm --prefix ./server run build"
     },
     "cacheDependencies": [
         "web/node_modules",
         "server/node_modules"
     ],
-    "license": "ISC"
+    "license": "ISC",
+    "devDependencies": {
+        "lerna": "^4.0.0"
+    }
 }

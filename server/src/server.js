@@ -22,10 +22,8 @@ const startServer = async () => {
         context: ({ req, res }) => ({ req, res }),
     });
 
-    app.use(express.static(path.resolve(__dirname, '../../web/build')));
-
     // Middlewares
-    app.use(helmet({ contentSecurityPolicy: false }));
+    app.use(helmet());
     app.use(cookieParser());
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
@@ -47,11 +45,6 @@ const startServer = async () => {
         .then(() => {
             console.log('MongoDB database connected');
         });
-
-    // serve the routes from the web
-    app.get('*', (_, res) => {
-        res.sendFile(path.resolve(__dirname, '../../web/build', 'index.html'));
-    });
 
     // start server
     const port = process.env.PORT || 4000;

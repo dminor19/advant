@@ -42,7 +42,7 @@ export default {
                 throw new UserInputError('Errors', { errors });
             }
 
-            // confirm user exists
+            // confirm user exists and is verified
             const user = await User.findOne({ email });
             if (!user) {
                 errors.general = 'Wrong credentials';
