@@ -6,7 +6,6 @@ COPY ./package.json .
 COPY ./server/package.json ./server/
 RUN npm --prefix ./server i --production
 
-
 COPY ./server/build ./server/
 COPY ./server/.env ./server/
 COPY ./server/google-credentials.json ./server/

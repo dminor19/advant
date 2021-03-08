@@ -2,7 +2,8 @@
     "name": "advant",
     "version": "1.0.0",
     "scripts": {
-        "build:server": "npm --prefix ./server run build"
+        "build:server": "npm --prefix ./server run build",
+        "build:web": "npm --prefix ./web run build:prod"
     },
     "cacheDependencies": [
         "web/node_modules",
