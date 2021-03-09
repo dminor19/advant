@@ -2,33 +2,23 @@ import usersResolvers from './userResolvers';
 import authResolvers from './authResolvers';
 
 //remove this import later
-import { User } from '../../models/User';
-import Appointment from '../../models/Appointment';
+import { Appointment } from '../../models/Appointment';
 
 export default {
     Appointment: {
-        customer: async (parent) => {
-            const user = await User.findById(parent.customer);
-            if (!user) {
-                throw new Error('User does not exist');
-            }
-            return user;
+        customer: async ({ customer }, __, { userLoader }) => {
+            if (!customer) return null;
+            return await userLoader.load(customer);
         },
-        servicer: async (parent) => {
-            const user = await User.findById(parent.servicer);
-            if (!user) {
-                throw new Error('User does not exist');
-            }
-            return user;
+        servicer: async ({ servicer }, __, { userLoader }) => {
+            if (!servicer) return null;
+            return await userLoader.load(servicer);
         },
     },
     User: {
-        appointments: async (parent) => {
-            const appointments = await Appointment.find()
-                .where('_id')
-                .in(parent.appointments)
-                .exec();
-            return appointments;
+        appointments: async ({ appointments }) => {
+            if (!appointments) return null;
+            return await Appointment.find({ _id: { $in: appointments } });
         },
     },
     Query: {

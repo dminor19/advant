@@ -5,26 +5,47 @@ import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import path from 'path';
 import helmet from 'helmet';
+import cors from 'cors';
 
 import typeDefs from './graphql/typeDefs';
 import resolvers from './graphql/resolvers';
 import { verifyToken } from './middlewares/auth';
+import { userLoader } from './graphql/dataloaders/serviceLoader';
+import { appointmentLoader } from './graphql/dataloaders/appointmentLoader';
 
 dotenv.config();
 
-const startServer = async () => {
+export const startServer = async () => {
     const app = express();
 
     // graphql server definition
     const server = new ApolloServer({
         typeDefs,
         resolvers,
-        context: ({ req, res }) => ({ req, res }),
+        context: ({ req, res }) => ({
+            req,
+            res,
+            userLoader: userLoader(),
+        }),
     });
 
     // Middlewares
-    app.use(helmet());
+    app.use(
+        helmet({
+            contentSecurityPolicy:
+                process.env.NODE_ENV === 'production' ? true : false,
+        })
+    );
     app.use(cookieParser());
+    app.use(
+        cors({
+            credentials: true,
+            origin:
+                process.env.NODE_ENV === 'production'
+                    ? process.env.FRONTEND_HOST
+                    : '*',
+        })
+    );
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
     app.use(verifyToken);
@@ -32,10 +53,18 @@ const startServer = async () => {
     server.applyMiddleware({ app });
 
     // connect to server in prod or dev
-    const serverAddress =
-        process.env.NODE_ENV == 'production'
-            ? process.env.MONGODB_ATLAS
-            : 'mongodb://127.0.0.1/advant';
+    let serverAddress;
+    switch (process.env.NODE_ENV) {
+        case 'production':
+            serverAddress = process.env.MONGODB_ATLAS;
+            break;
+        case 'test':
+            serverAddress = 'mongodb://127.0.0.1/advant-test';
+            break;
+        default:
+            serverAddress = 'mongodb://127.0.0.1/advant';
+    }
+
     await mongoose
         .connect(serverAddress, {
             useNewUrlParser: true,
@@ -53,6 +82,6 @@ const startServer = async () => {
             `Server running at http://localhost:${port}${server.graphqlPath}`
         )
     );
-};
 
-startServer();
+    return app;
+};

@@ -10,4 +10,5 @@ const appointmentSchema = new Schema({
     servicer_notes: String,
 });
 
-export default model('Appointment', appointmentSchema);
+const Appointment = model('Appointment', appointmentSchema);
+export { Appointment };
