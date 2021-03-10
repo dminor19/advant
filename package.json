@@ -1,6 +1,7 @@
 {
     "name": "advant",
     "version": "1.0.0",
+    "private": "true",
     "scripts": {
         "build:server": "npm --prefix ./server run build",
         "build:web": "npm --prefix ./web run build:prod"
@@ -9,8 +10,5 @@
         "web/node_modules",
         "server/node_modules"
     ],
-    "license": "ISC",
-    "devDependencies": {
-        "lerna": "^4.0.0"
-    }
+    "license": "ISC"
 }
