@@ -61,9 +61,11 @@ export default {
             }
 
             // Generate and assign refresh and access tokens
-            const { refreshToken, accessToken } = createTokens(user);
-            res.cookie('refresh-token', refreshToken);
-            res.cookie('access-token', accessToken);
+            if (process.env.NODE_ENV !== 'test') {
+                const { refreshToken, accessToken } = createTokens(user);
+                res.cookie('refresh-token', refreshToken);
+                res.cookie('access-token', accessToken);
+            }
 
             return {
                 ...user._doc,

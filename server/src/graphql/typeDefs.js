@@ -6,6 +6,8 @@ export default gql`
         email: String!
         createdAt: String!
         appointments: [Appointment]
+        firstName: String
+        lastName: String
     }
 
     type Appointment {
@@ -34,6 +36,7 @@ export default gql`
     }
 
     type Query {
+        hello: String
         me: User!
         getAllAppointments: [Appointment]
         verifyEmail(tokenId: String!): Boolean!

@@ -22,6 +22,7 @@ export default {
         },
     },
     Query: {
+        hello: () => 'Hello World',
         ...usersResolvers.Query,
         ...authResolvers.Query,
     },

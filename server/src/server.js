@@ -15,18 +15,26 @@ import { appointmentLoader } from './graphql/dataloaders/appointmentLoader';
 
 dotenv.config();
 
-export const startServer = async () => {
+export const configureServer = async () => {
     const app = express();
 
     // graphql server definition
     const server = new ApolloServer({
         typeDefs,
         resolvers,
-        context: ({ req, res }) => ({
-            req,
-            res,
-            userLoader: userLoader(),
-        }),
+        context: ({ req, res, connection }) => {
+            if (connection) {
+                return connection.context;
+                // userLoader: userLoader()
+            } else {
+                req = req || { headers: [] };
+                return {
+                    req,
+                    res,
+                    userLoader: userLoader(),
+                };
+            }
+        },
     });
 
     // Middlewares
@@ -75,13 +83,5 @@ export const startServer = async () => {
             console.log('MongoDB database connected');
         });
 
-    // start server
-    const port = process.env.PORT || 4000;
-    app.listen({ port }, () =>
-        console.log(
-            `Server running at http://localhost:${port}${server.graphqlPath}`
-        )
-    );
-
-    return app;
+    return { app, server };
 };

@@ -55,7 +55,8 @@ export const sendDummyEmail = async (
     });
 
     // Preview only available when sending through an Ethereal account
-    console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+    if (process.env.NODE_ENV !== 'test')
+        console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
 };
 
 // TODO: Starting using Foundation to create email templates
@@ -70,7 +71,7 @@ export const sendRegistationConfirmationEmail = async (req, token, email) => {
     if (process.env.NODE_ENV === 'production') {
         await sendEmail(email, subject, text, html);
     } else {
-        console.log(link);
+        if (process.env.NODE_ENV !== 'test') console.log(link);
         await sendDummyEmail(email, subject, text, html);
     }
 };
@@ -88,7 +89,7 @@ export const sendRequestResetPasswordEmail = async (req, token, email) => {
     if (process.env.NODE_ENV === 'production') {
         await sendEmail(email, subject, text, html);
     } else {
-        console.log(link);
+        if (process.env.NODE_ENV !== 'test') console.log(link);
         await sendDummyEmail(email, subject, text, html);
     }
 };
